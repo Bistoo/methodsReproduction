@@ -1,0 +1,92 @@
+<script src="../tinytest.js"></script>
+<script>
+
+// FUNCTION
+//  the push() method adds one or more elements to the end of an array and returns the new length of the array.
+
+// RETURN VALUE
+//  the new length property of the object upon which the method was called.
+
+// FUNCTION SIGNATURE
+//  push(array, element1[, ...[, elementN]])
+
+// EXAMPLES
+//  [0,1,2,3].push(4);            // 5
+//  [0,1,2,3].push();             // 4
+//  [].push();                    // 0
+
+// PROTOTYPE IMPLEMENTATION
+//  function push(array) {
+//    for (i = 1 ; i < arguments.length ; i++){
+//      array = array +  arguments[i];
+//    }
+//    return array.length;
+//  }
+// 
+
+
+
+function push(array) {
+  // if array.length can not be converted to a number or if negative, then array.length is 0.
+  if (isNaN(array.length) || array.length < 0) {
+    array.length = 0;
+  }
+
+  // first case: to add two arrays if an array is provided as arguments[1].
+  if (Array.isArray(arguments[1])) {
+    for (i = 0 ; i < arguments[1].length ; i++){
+      array[array.length] = arguments[1][i];
+    }
+  // second case: just add elements from arguments[1] to arguments[n].     
+  } else {
+    for (j = 1 ; j < arguments.length ; j++){
+      array[array.length] = arguments[j];
+    }
+  }
+  return array.length;
+}
+
+tests({
+
+  'It should return the length of the array': function() {
+    var arrayLength = push([1]);
+    eq(arrayLength === 1,true);
+  },
+
+  'It should append one element passed in arguments[1]': function() {
+    var arrayLength = push([1],"hey");
+    eq(arrayLength === 2,true);
+  },
+
+  'It should append all elements passed in arguments[1] to arguments [n]': function() {
+    var arrayLength = push([1],"hey", "ho","hey again");
+    eq(arrayLength === 4,true);
+  },
+
+  'It should be able to merge two arrays': function() {
+    var arrayLength = push([1], ["hey", "ho"]);
+    eq(arrayLength === 3,true);
+  },
+
+  'If the length property cannot be converted into a number, it should use 0 as index': function() {
+    var arrayObject = {length: "Oups, this is a string"};
+    eq(arrayObject.length !== Number, true)
+    var arrayLength = push(arrayObject);
+    eq(arrayLength === 0,true);
+  },
+
+  'It should return the original array with the appended elements, not a new array': function() {
+    var originalArray = [1];
+    push(originalArray, ["hey"])
+    eq(originalArray.length === 2,true);
+  },
+
+  'If the last element of the array is a hole, it should push the first element in its place ': function() {
+    var arrayLength = push([1,],"hey");
+    eq(arrayLength === 2,true);
+  }
+
+});
+
+
+    </script>

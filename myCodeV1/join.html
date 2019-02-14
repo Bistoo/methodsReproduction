@@ -1,0 +1,95 @@
+<script src="../tinytest.js"></script>
+<script>
+
+// Function
+//  returns a string.
+
+// Prototype implementation
+// 
+// function join(array, separator) {
+//  var joinString = "";  
+//  for (i = 0 ; i < array.length ; i++) {
+//    joinString += array[i];
+//  }
+// return joinString;
+// }
+
+// Function signature
+//  join(array, [separator])
+
+
+function join(array, separator) {
+  var separe = "";
+  
+  if (separator === undefined) {
+    separe = ",";
+  }
+
+  if (separator) {
+    separe = separator;
+  }
+
+  if (array.length === 0) {
+    var joinString = ""
+  } else {
+    if (array[0] === undefined || array[0] === null) {
+      array[0] = "";
+    }
+    var joinString = "" + array[0];
+  }
+  
+  for (i = 1 ; i < array.length ; i++) {
+    if (array[i] === undefined || array[i] === null) {
+      array[i] = "";
+    }
+    joinString += separe + array[i];
+  }
+  return joinString;
+}
+
+tests({
+
+  'It should return a string': function() {
+    var joinString = join([]);
+    eq(typeof joinString === 'string', true);
+  },
+
+  'It should join all the array elements into the new string': function() {
+    var joinString = join(['one', 2]);
+    eq(joinString === 'one,2', true);
+  },
+
+  'If an empty array if passed in, it should retun an empty string': function() {
+    var joinString = join([]);
+    eq(joinString.length === 0, true);
+  },
+
+  'If there is no separator, it should separate with a comma (,)': function() {
+    var joinString = join(['one','two']);
+    eq(joinString === 'one,two', true);
+  },
+
+  'If there is a separator, it should separate with the given separator': function() {
+    var joinString = join(['one','two'], " + ");
+    eq(joinString === 'one + two', true);
+  },
+
+  'If there is a separator and separator is an empty space, all elements are joined without any characters in between them': function() {
+    var joinString = join(['one','two'], '');
+    eq(joinString === 'onetwo', true);
+  },
+
+  'If an element is undefined or null, it should be converted to an empty string ': function() {
+    var joinString = join(['one',,'two']);
+    eq(joinString === 'one,,two', true);
+  },
+
+  'If first element is undefined or null, it should be converted to an empty string ': function() {
+    var joinString = join([,'one']);
+    eq(joinString === ',one', true);
+  },
+
+});
+
+
+    </script>

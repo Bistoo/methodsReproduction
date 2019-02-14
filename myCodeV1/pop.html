@@ -1,0 +1,98 @@
+<script src="../tinytest.js"></script>
+<script>
+
+// FUNCTION
+//  the pop() method removes the last element from an array and returns that element. 
+//  this method changes the length of the array.
+
+// RETURN VALUE
+//  the last element of the originalArray (poppedElement)
+
+// FUNCTION SIGNATURE
+//  pop(array)
+
+// EXAMPLES
+//  [0,1].pop();                       // 1
+//  [0,'item'].pop();                  // "item"
+//  [,,,,].pop();                      // undefined
+//  [,0,].pop();                       // 0
+//  [].pop();                          // undefined
+//  {0: "zero", 1: "one"}.pop();       // Uncaught SyntaxError: Unexpected token :
+
+// PROTOTYPE IMPLEMENTATION
+  // function pop(array) {
+    // var poppedElement = array[array.length - 1];
+    // var poppedArray = []
+
+    // for (i = 0 ; i < array.length - 1 ; i++){
+    //    poppedArray[i] = array[i];
+    // }
+    // array = poppedArray;
+    // return poppedElement;
+  // }
+  // Note : does not work, failed to return the modified version, it's like a non destructive pop...
+  // Note : try to use for loop to return the array
+
+
+
+function pop(array) {
+  var poppedElement = array[array.length - 1];
+
+  if (array){
+    if (array.length > 0){
+      array.length = array.length-1;
+    }
+  }
+  return poppedElement;
+}
+
+tests({
+
+  'It should return a string if the last array element is a string': function() {
+    var poppedElement = pop([1,'element']);
+    eq(typeof poppedElement === "string", true);
+  },
+
+  'It should return a number if the last array element is a number': function() {
+    var poppedElement = pop([1,2]);
+    eq(typeof poppedElement === "number", true);
+  },
+  
+  'It should return the last element of the array before being popped': function() {
+    var poppedElement = pop([1,2]);
+    eq(poppedElement === 2,true);
+  },
+
+  'It should remove the last element of the passed array': function() {
+    var array = [1,2];
+    var poppedElement = pop(array);
+    eq(array.length === 1,true);
+    eq(poppedElement === 2,true);
+  },
+
+  'It should return undefined if the array is empty': function() {
+    var poppedElement = pop([]);
+    eq(poppedElement === undefined,true);
+  },
+
+  'If the last element of the array is a hole, it should remove the element before the hole (even if it s also a hole)': function() {
+    var poppedElement = pop([1,]);
+    eq(poppedElement === 1,true);
+  },
+
+  'If should work for array like objects': function() {
+    var arrayLike = {
+      length: 2,
+      0: 1,
+      1: 2
+    }
+    var poppedElement = pop(arrayLike);
+    eq(poppedElement, 2);
+    eq(arrayLike.length === 1, true);
+  }
+
+
+});
+
+
+    </script>

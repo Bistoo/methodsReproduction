@@ -1,0 +1,84 @@
+<script src="../tinytest.js"></script>
+<script>
+
+// FUNCTION
+//  the shift() method removes the first element from an array and returns that removed element. 
+//  this method changes the length of the array.
+
+// RETURN VALUE
+//  the removed element (the first element of the array)
+
+// SIGNATURE
+//  shift(array)
+
+// EXAMPLES
+//  [0,1].shift();        // 0          (array = [1])
+//  [].shift();           // undefined  (array = [])
+
+// PROTOTYPE IMPLEMENTATION
+//
+// function shift(array) {
+//    var shiftedElement = array[0]
+//    if (array){
+//      array.splice(0,1);
+//    }
+//    return shiftedElement;
+// }
+
+function shift(array) {
+  // stores the first element of the array before deletion
+  var shiftedElement = array[0];
+  var shiftedArray = [];
+
+  if (array.length === 0) {
+    return undefined;
+  } else {
+    // moves all elements 1 slot before
+    for (var i = 0 ; i < array.length ; i++) {
+      array[i] = array[i + 1];
+    }
+  }
+
+  // removes the last element of the array
+  array.length--;
+  return shiftedElement;
+}
+
+tests({
+
+  'It should return the first element of the array before being shifted': function() {
+    var shiftedElement = shift([1,2]);
+    eq(shiftedElement === 1,true);
+  },
+
+  'It should remove the first element of the passed array': function() {
+    var array = [1,2];
+    shift(array);
+    eq(array.length === 1,true);
+  },
+
+  'It should return undefined if the array is empty': function() {
+    var shiftedElement = shift([]);
+    eq(shiftedElement === undefined,true);
+  },
+
+  'If the first element of the array is a hole, it should remove the hole': function() {
+    var shiftedElement = shift([,1,]);
+    eq(shiftedElement === undefined,true);
+  },
+
+  'If should work for array like objects': function() {
+    var arrayLike = {
+      0: 0,
+      1: 1,
+      length:2
+    }
+    var shiftedElement = shift(arrayLike);
+    eq(shiftedElement === 0, true)
+    eq(arrayLike.length === 1, true);
+  }
+
+});
+
+
+    </script>

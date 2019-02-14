@@ -1,0 +1,144 @@
+<script src="../tinytest.js"></script>
+<script>
+
+// FUNCTION
+//  returns the index of the first element that satisfies the testing callback
+//  executes the callback for each index of the array
+
+// RETURN VALUE
+//  an index or -1 if value not found
+
+// SIGNATURE
+//  find(array, callback[, thisArg])
+
+// CALLBACK PARAMETERS
+//    current element
+//    [index of the current element]
+//    [array]
+
+// EXAMPLES
+//  [1,2,3].findIndex()                                       // Uncaught TypeError: undefined is not a function at Array.find
+//  [1,2,3].findIndex(function(n) {return n < 3;});           // 0
+//  [].findIndex(function(n) {return n < 3;});                // -1
+//  [{0:1},{1:1}].findIndex(function(n) {return n < 3;});     // -1
+//  ["one",2,3].findIndex(function(n) {return n < 3;});       // 1
+//  ["one",2,3].findIndex(function(n) {return n === "one";}); // 0
+
+// PROTOTYPE IMPLEMENTATION
+//
+// function findIndex(array, callbackToFind) {
+//  for (i = 0; i < array.length; i++) {
+//    if (callbackToFind(array[i]) === true) {
+//      return i;
+//    }
+//  return -1;
+//  }
+// }
+
+function findIndex(array, callback, optionalThis) {
+  // creates callback variable to eventually bind the callback to optionalThis
+  var findCallback = callback;
+
+  // binds optionalThis if present
+  if (optionalThis) {
+    findCallback = callback.bind(optionalThis);
+  }
+
+  // returns the index of the first element that matches the provided testing callback
+  for (var i = 0 ; i < array.length ; i++) {
+    if(findCallback(array[i], i, array) === true) {
+      return i;
+    };
+  }
+  return -1;
+}
+
+tests({
+
+  'It should execute the callback on each value in the array': function() 
+  {
+    var countOfTimesCallbackHasRun = 0;
+    findIndex([1,2,3], function() {
+      countOfTimesCallbackHasRun++;
+    });
+    eq(countOfTimesCallbackHasRun, 3);
+  },
+
+  'It should pass in the ith element as the first argument to the callback': function() 
+  {
+    findIndex([1], function(number) {
+       eq(number, 1);
+     });
+  },
+
+  'It should pass in the ith element position as the second argument to the callback': function() 
+  {
+    findIndex([1], function(number, index) {
+      eq(index,0);
+    });
+  },
+
+  'It should pass in the original array as the third argument to the callback': function() 
+  {
+    var array = [1,2,3];
+    findIndex(array, function(number, index, originalArray) {
+      eq(originalArray, array);
+    });
+  },
+
+  'It should accept an optional This object': function() 
+  {
+    findIndex([1], function() {
+         eq(this.description, 'custom this');
+       }, {description: 'custom this'});
+  },
+
+  'It should use undefined as This if not passed in': function() 
+  {
+    findIndex([1], function() {
+         eq(this.description, undefined);
+       });
+  },
+
+  'It should return the index of the first element that returns true to the callback': function() {
+    var resultFind = findIndex([10, 20, 30], function(number) {
+      return number < 35;
+    });
+    eq(resultFind,0);
+  },
+
+  'It should run the callback on every element of the array, even the empty ones': function() {
+    var countOfTimesCallbackHasRun = 0;
+    findIndex([1,2,,3], function() {
+      countOfTimesCallbackHasRun++;
+    });
+    eq(countOfTimesCallbackHasRun, 4);
+  },
+
+  'It should return -1 if no array element returns true to the callback': function() {
+    var resultFind = findIndex([10, 20, 30], function(number) {
+      return number > 35;
+    });
+    eq(resultFind,-1);
+  },
+
+  'It should not mutate elements in the array': function() {
+    var refArray = [1, 2, 3, 4];
+    findIndex(refArray, function(){})
+    eq(JSON.stringify(refArray), JSON.stringify([1,2,3,4]));
+  },
+
+  'If no callback function, it should throw a typeError': function() {
+    var isTypeError = false;
+    try {
+      findIndex([1]);
+    } catch (e) {
+      isTypeError = (e instanceof TypeError);
+    }
+    eq(isTypeError, true);
+  }
+
+});
+
+
+    </script>

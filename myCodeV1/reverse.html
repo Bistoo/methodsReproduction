@@ -1,0 +1,68 @@
+<script src="../tinytest.js"></script>
+<script>
+
+// FUNCTION
+//  the reverse() method reverses an array in place. 
+//  the first array element becomes the last, and the last array element becomes the first.
+
+// EXAMPLES
+
+
+// PROTOTYPE IMPLEMENTATION
+//
+// function reverse(array) {
+//  reversedArray = [];
+//
+//  for (var i = array.length ; i > 0 ; i--) {
+//    reverseArray[array.length - 1 - i] = array[i];
+//  }
+//  array = reversedArray;
+//  return array;
+// }
+
+// SIGNATURE
+//  reverse(array)
+
+
+function reverse(array) {
+  reversedArray = [];
+
+  for (var i = array.length - 1 ; i >= 0 ; i--) {
+    reversedArray[array.length - 1 - i] = array[i];
+  }
+  array = reversedArray;
+  return array;
+}
+
+tests({
+
+  'It should return an array': function() {
+    var array = reverse([]);
+    eq(Array.isArray(array), true);
+  },
+
+  'It should reverse the passed in array': function() {
+    var array = reverse([1,2]);
+    eq(array[0] === 2, true);
+    eq(array[1] === 1, true);
+  },
+
+  'It should reverse arrays with holes': function() {
+    var array = reverse([,2]);
+    eq(array[0] === 2, true);
+    eq(array[1] === undefined, true);
+  },
+
+  'If the last element is empty, it should not reverse the last element': function() {
+    var array = reverse([,2,]);
+    eq(array.length === 2, true);
+  },
+
+  '': function() {
+    fail();
+  }
+
+});
+
+
+    </script>

@@ -1,0 +1,87 @@
+<script src="../tinytest.js"></script>
+<script>
+
+// FUNCTION
+//  the includes() method determines whether an array includes a certain value among its entries, returning true or false 
+
+// SIGNATURE
+//  includes(array, elementToSearch[, fromIndex])
+
+// PROTOTYPE IMPLEMENTATION
+//  function includes(array, elementToSearch, fromIndex) {   
+//   for (var i = 0 ; i < array.length ; i ++){
+//     if (aray[i] === elementToSearch) {
+//       return true;
+//     }
+//   }
+//   return false;
+//  }
+
+
+
+function includes(array, elementToSearch, fromIndex) {
+  var startIndex = 0;
+  
+  if(fromIndex) {
+    startIndex = fromIndex;
+    if (fromIndex < 0) {
+      startIndex = array.length + fromIndex;
+    }
+  }
+
+  for (var i = startIndex ; i < array.length ; i ++){
+    if (array[i] === elementToSearch) {
+      return true;
+    }
+  }
+  return false;
+}
+
+tests({
+
+  'It should return a boolean value, false by default (if no elementToSearch)': function() {
+    var isIncluded = includes([]);
+    eq(isIncluded, false);
+  },
+
+  'It should return a boolean value, true if one or more holes and no elementToSearch': function() {
+    var isIncluded = includes([,]);
+    eq(isIncluded, true);
+  },
+
+  'It should return true if a value is matching the elementToSearch': function() {
+    var isIncluded = includes(['hey'], 'hey');
+    eq(isIncluded, true);
+  },
+
+  'It should return false if no value is matching the elementToSearch': function() {
+    var isIncluded = includes(['hey'], 'hey, been trying to meet you');
+    eq(isIncluded, false);
+  },
+
+  'It should be case sensitive': function() {
+    var isIncluded = includes(['hey'], 'Hey');
+    eq(isIncluded, false);
+  },
+
+  'If fromIndex is provided, it should start from fromIndex': function() {
+    var isIncluded = includes(['hey', 'ho'], 'hey', 1);
+    eq(isIncluded, false);
+  },
+
+  'If fromIndex is provided and negative, it should start at array.length + fromIndex': function() {
+    var isIncluded = includes(['hey', 'ho'], 'hey', -1);
+    eq(isIncluded, false);
+    var isIncluded1 = includes(['hey', 'ho'], 'ho', -1);
+    eq(isIncluded1, true);
+  },
+
+  'If fromIndex is provided and negative and array.length + fromIndex < 0, then the search will start from 0': function() {
+    var isIncluded = includes(['hey', 'ho'], 'hey', -3);
+    eq(isIncluded, true);
+  }
+
+});
+
+
+    </script>

@@ -1,0 +1,99 @@
+<script src="../tinytest.js"></script>
+<script>
+
+// FUNCTION
+//  the unshift() method adds one or more elements to the beginning of an array 
+//  returns the new length of the array
+
+// PROTOTYPE IMPLEMENTATION
+//
+// function unshift(array) {
+//  tempArray = [];  
+//  
+//  if (array){
+//      for (var i = 1 ; i < arguments.length ; i++) {
+//        tempArray[i-1] = arguments[i]
+//      }
+//    }
+//    return array.length;
+// }
+
+// SIGNATURE
+//  unshift(array, element1[, element2[,...., elementN]])
+
+
+
+function unshift(array) {
+  tempArray = [];
+
+  // goes through all the passed in elements and puts them in front
+  for (var i = 0 ; i < arguments.length ; i++) {
+    tempArray[i] = arguments[i + 1];
+  }
+
+  // goes through the provided array and passes the elements to the end of tempArray
+  for (var j = 0 ; j < array.length ; j++){
+    tempArray[j + arguments.length - 1] = array[j];
+  }
+
+  // tempArray elements are passed to array
+  for (var k = 0 ; k < tempArray.length ; k++){
+    array[k] = tempArray[k];
+  }
+
+  return array.length;
+}
+
+tests({
+
+  'It should return a number': function() {
+    var array = [1,2];
+    var unshiftedLength = unshift(array,1);
+    eq(isNaN(unshiftedLength), false);
+  },
+
+  'It should add the provided element at the beginning of the array': function() {
+    var array = [0, 0];
+    unshift(array, 1);
+    eq(array[0] === 1, true);
+  },
+
+  'It should add the provided elements at the beginning of the array': function() {
+    var array = [0, 0];
+    unshift(array, 1, 2);
+    eq(array[0] === 1, true);
+    eq(array[1] === 2, true);
+  },
+
+  'It should have the original elements at the end of the array': function() {
+    var array = [0, 0];
+    unshift(array, 1, 2);
+    eq(array[0] === 1, true);
+    eq(array[1] === 2, true);
+    eq(array[2] === 0, true);
+    eq(array[3] === 0, true);
+  },
+
+  'It should return the new length of the array': function() {
+    var array = [0, 0];
+    unshiftedElement = unshift(array, 1, 2);
+    eq(unshiftedElement === 4, true);
+  },
+
+  'It should work with arrays ; if the provided element is an array it should be added at the beginning of the array': function() {
+    var array = [0, 0];
+    unshift(array, [1]);
+    eq(Array.isArray(array[0]), true);
+  },
+
+  'It should work with arrays ; if the provided elements are arrays it should be added at the beginning of the array': function() {
+    var array = [0, 0];
+    unshift(array, [1], [1,2]);
+    eq(Array.isArray(array[0]), true);
+    eq(Array.isArray(array[1]), true);
+  }
+
+});
+
+
+    </script>

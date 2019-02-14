@@ -1,0 +1,167 @@
+<script src="../tinytest.js"></script>
+<script>
+
+// FUNCTION
+//  the sort() method sorts the elements of an array in place and returns the array
+//  the default sort order is built upon converting the elements into strings, then comparing their sequences of UTF-16 code units values.
+//  by default, the sort() function sorts values as strings.
+
+// RETURN VALUE
+//  the sorted array. The array is sorted in place, and no copy is made
+
+// SIGNATURE
+//  sort(array[, compareFunction])
+ 
+// COMPARATOR PARAMETERS
+//  compareFunction: specifies a function that defines the sort order. 
+  //  firstEl: the first element for comparison.
+  //  secondEl: the second element for comparison.
+
+// EXAMPLES
+//  no compareFunction examples:
+  //  [].sort();                                            // []
+  //  [2,3,1,2].sort();                                     // [1, 2, 2, 3]
+  //  [121,2,1,3].sort();                                   // [1, 121, 2, 3]
+  //  ["banana", "orange", "Banana", "Orange"].sort();      // ["Banana", "Orange", "banana", "orange"]
+  //  ["banana", 1, 2, "orange", "Banana", 1200].sort();    // [1, 1200, 2, "Banana", "banana", "orange"]
+  //  [,1,4, undefined,3, "banana"].sort();                 // [1, 3, 4, "banana", undefined, empty]
+//
+//  compareFunction examples:
+  //  [121,2,1,3].sort(function(a,b) {return a - b;});      // [1, 2, 3, 121]   // if a less than b, then function is < 0 and we need to switch
+  //  [121,2,1,3].sort(function(a,b) {return b - a;});      // [121, 3, 2, 1]
+  //  [121,2,1,3].sort(function(a,b) {return b + a;});      // [121, 2, 1, 3]
+  //  [121,2,"a",3,1].sort(function(a,b) {return a - b;});  // [1, 2, 3, 121, "a"]
+
+// PROTOTYPE IMPLEMENTATION
+// function sort(array, compareFunction) {
+//    
+//    // METHOD 1: TEMP ARRAY method:looks for the smallest value in the left array, gets that value back, puts it in i and so on
+//    // requires another temp array with a smallestSoFar store
+//    // PROBLEM: it is not doing the sort "in place" ?
+//
+//    // METHOD 2 : a swap system with a short memory span
+//    // same as the previous, compare each element and swap them if the j is < than the i
+//
+//    // Loop 1 : go throuh all the elements in the array
+//    for (var i = 0 ; i < array.length ; i++)
+//    
+//      // Loop 2 : compare the i element to each remaining elements in the array (i + 1 to array.length)
+//      // if this remaining element is less than i, then we put it in i, and i goes in j
+//      // i goes to smallStore, j goes to i, smallStore goes to j
+//      for (var j = i + 1 ; j < array.length ; j++) {
+//        if (array[j] < array[i]) {
+//          smallStore = array[i];
+//          array[i] = array[j];
+//          array[j] = smallStore;
+//        }
+//      }
+//    }
+//    return array;
+// }
+
+// CASES
+// if there is no compareFunction, it should rank strings in ascending order. Therefore:
+  //  121 < 2
+  //  "Banana" < "banana"
+  //  "numbers" < "strings"
+// if there is a compareFunction, it should return according to the return value of the compare function:
+  //  undefined element are style sorted to the end of the array, with no call to the compareFunction
+  //  if compareFunction(a, b) is less than 0, a comes first
+
+
+function sort(array, compareFunction) {
+  
+  // compareFunction case: if compareFunction returns > 0, then j goes in i
+  if (compareFunction) {
+
+    // Loop 1 : go throuh all the elements in the array
+    for (var i = 0 ; i < array.length ; i++){
+
+      // Loop 2 : compare the i element to each remaining elements in the array (i + 1 to array.length)
+      for (var j = i + 1 ; j < array.length ; j++) {
+        if (compareFunction(array[i], array[j]) > 0) {
+          var buffer = array[i];
+          array[i] = array[j];
+          array[j] = buffer;    
+        }
+      }
+    }
+
+  // case without the compareFunction
+  } else {
+
+    // Loop 1 : go throuh all the elements in the array
+    for (var i = 0 ; i < array.length ; i++){
+      
+      // Loop 2 : compare the i element to each remaining elements in the array (i + 1 to array.length)
+      for (var j = i + 1 ; j < array.length ; j++) {
+        // no compareFunction case: if this compared element (j) is less than i, then j goes in i
+        if (String(array[j]) < String(array[i])) {
+          var buffer = array[i];
+          array[i] = array[j];
+          array[j] = buffer;
+        }
+      }
+    }
+  } 
+  return array;
+}
+
+tests({
+
+  'It should return an array': function() {
+    var array = [].sort();
+    eq(Array.isArray(array), true);
+  },
+
+  'It should return an array of the same length as the original passed in array': function() {
+    var array =[1,2]
+    var sortedArray = array.sort();
+    eq(array.length, sortedArray.length);
+  },
+
+  'It should sort strings in an ascending order': function() {
+    var array = [3, 2, 121, 5, 1];
+    sort(array);
+    eq(array[0], 1);
+    eq(array[1], 121);
+    eq(array[2], 2);
+    eq(array[3], 3);
+    eq(array[4], 5);
+  },
+
+  'If should sort holes and undefined and put them at the end of the sorted array': function() {
+    var array = [,1,4, undefined,3, "banana"];
+    sort(array);
+    eq(array[0], 1);
+    eq(array[1], 3);
+    eq(array[2], 4);
+    eq(array[3], "banana");
+    eq(array[4], undefined);
+    eq(array[5], undefined);
+  },
+
+  'If the function is present, it should sort use the compareFunction to sort': function() {
+    var array = [3, 2, 121, 5, 1];
+    sort(array, function (a,b) {return b - a;});
+    eq(array[0], 121);
+    eq(array[1], 5);
+    eq(array[2], 3);
+    eq(array[3], 2);
+    eq(array[4], 1);
+  },
+
+  'If the compareFunction is present and is comparing a - b, it should sort in ascending order': function() {
+    var array = [3, 2, 121, 5, 1];
+    sort(array, function (a,b) {return a - b;});
+    eq(array[0], 1);
+    eq(array[1], 2);
+    eq(array[2], 3);
+    eq(array[3], 5);
+    eq(array[4], 121);
+  }
+
+});
+
+
+    </script>
