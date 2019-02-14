@@ -1,10 +1,23 @@
 <script src="../tinytest.js"></script>
 <script>
 
-// Function
+// FUNCTION
+//  creates and returns a new string by concatenating all of the elements in an array 
+//  (or an array-like object), separated by commas or a specified separator string.
+//  If an element is undefined or null, it is converted to the empty string.
+
+// RETURN VALUE
 //  returns a string.
 
-// Prototype implementation
+// SIGNATURE
+//  join(array, [separator])
+
+// EXAMPLES
+//  [].join();                    // ""
+//  [null, undefined].join();     // ","
+//  [0,1].join(null);             // "0null1"
+
+// PROTOTYPE IMPLEMENTATION
 // 
 // function join(array, separator) {
 //  var joinString = "";  
@@ -14,30 +27,37 @@
 // return joinString;
 // }
 
-// Function signature
-//  join(array, [separator])
 
 
 function join(array, separator) {
-  var separe = "";
+  // Creates the variable to be returned
+  var joinString;
+  // SETUP of the separe parameter
+  var separe;
   
   if (separator === undefined) {
     separe = ",";
   }
 
-  if (separator) {
+  if (separator || separator === "") {
     separe = separator;
   }
 
+  if (separator === null){
+    separe = "null"
+  }
+
+  // Deals with the first element of the array
   if (array.length === 0) {
-    var joinString = ""
+    joinString = ""
   } else {
     if (array[0] === undefined || array[0] === null) {
       array[0] = "";
     }
-    var joinString = "" + array[0];
+    joinString = "" + array[0];
   }
   
+  // Adds the other elements to the array
   for (i = 1 ; i < array.length ; i++) {
     if (array[i] === undefined || array[i] === null) {
       array[i] = "";
@@ -80,7 +100,7 @@ tests({
   },
 
   'If an element is undefined or null, it should be converted to an empty string ': function() {
-    var joinString = join(['one',,'two']);
+    var joinString = join(['one', null,'two']);
     eq(joinString === 'one,,two', true);
   },
 
@@ -88,6 +108,11 @@ tests({
     var joinString = join([,'one']);
     eq(joinString === ',one', true);
   },
+
+  'If null is passed in as separator, it should be used as a "null" string': function() {
+    var joinString = join([0,1], null);
+    eq(joinString === '0null1', true);
+  }
 
 });
 
