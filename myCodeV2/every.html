@@ -1,0 +1,167 @@
+<script src="../tinytest.js"></script>
+<script>
+
+// FUNCTION
+//  tests whether all elements in the array pass the test implemented by the provided function
+//  executes the callback for each index of the array
+
+// RETURN VALUE
+//  true or false
+
+// FUNCTION SIGNATURE
+// every(array, callback[, thisArg])
+
+// CALLBACK PARAMETERS
+//    current element
+//    [index of the current element]
+//    [array]
+
+// EXAMPLES
+//  [1,2].every();                              // Uncaught TypeError
+//  [1,2].every(function(n){n < 5});            // false
+//  [1,2].every(function(n){return n < 5});     // true
+//  [].every(function(n){return n < 5});        // true
+//  [,,,].every(function(n){return n < -1});    // true         
+
+// PROTOTYPE IMPLEMENTATION
+//
+// function every(array, callbackToEvery) {
+//  for (i = 0; i < array.length; i++) {
+//    if (callbackToEvery(array[i]) === false) {
+//      return false;
+//    } 
+//  return true;
+//  }
+// }
+//
+// Note: this prototype does not work because if return is omitted in the callback, it returns true
+
+function every(array, callback, optionalThis) {
+  // creates callback variable to eventually bind the callback to optionalThis
+  var callbackToEvery = callback;
+
+  // binds optionalThis if present
+  if (optionalThis) {
+    callbackToEvery = callback.bind(optionalThis);
+  }
+
+  // countOfTruthies stores the number of times the callback returned true to the call
+  var countOfTruthies = 0;
+
+  for (var i = 0 ; i < array.length ; i++) {
+    if(callbackToEvery(array[i], i, array) === true) {
+      countOfTruthies ++;
+    }
+  }
+
+  // then if truthy calls to callbacks equals the number of array elements, it returns true
+  if (countOfTruthies === array.length){
+   return true
+  }
+
+  return false;
+  }
+
+tests({
+
+  'It should execute the callback on each value in the array': function() 
+  {
+    var countOfTimesCallbackHasRun = 0;
+    every([1,2,3], function() {
+      countOfTimesCallbackHasRun++;
+    });
+    eq(countOfTimesCallbackHasRun, 3);
+  },
+
+  'It should pass in the ith element as the first argument to the callback': function() 
+  {
+    every([1], function(number) {
+      eq(number, 1);
+    });
+  },
+
+  'It should pass in the ith element position as the second argument to the callback': function() 
+  {
+    every([1], function(number, index) {
+      eq(index,0);
+    });
+  },
+
+  'It should pass in the original array as the third argument to the callback': function() 
+  {
+    var array = [1,2,3];
+    every(array, function(number, index, originalArray) {
+      eq(originalArray, array);
+    });
+  },
+
+  'It should accept an optional This object': function() 
+  {
+    every([1], function() {
+      eq(this.description, 'custom this');
+    }, {description: 'custom this'});
+  },
+
+  'It should use undefined if This not passed in': function() 
+  {
+    every([1], function() {
+         eq(this.description, undefined);
+       });
+  },
+
+  'It should return false if one element returns false to the callback': function() {
+    var resultEvery = every([10, 20, 30], function(number) {
+      return number < 25;
+    });
+    eq(resultEvery,false);
+  },
+
+  'It should return true on an empty array': function() {
+    var resultEvery = every([], function(number) {
+      return number < 35;
+    });
+    eq(resultEvery,true);
+  },
+
+  'It should return false if the the function call result is not returned': function() {
+    var resultEvery = every([1], function(number) {
+      number < 35;
+    });
+    eq(resultEvery, false);
+  },
+
+  'It should run the callback on every element of the array, even the empty ones': function() {
+    var countOfTimesCallbackHasRun = 0;
+    every([1,2,,3], function() {
+      countOfTimesCallbackHasRun++;
+    });
+    eq(countOfTimesCallbackHasRun, 4);
+  },
+
+  'It should return true if every array element returns true to the callback': function() {
+    var resultEvery = every([10, 20, 30], function(number) {
+      return number < 35;
+    });
+    eq(resultEvery,true);
+  },
+
+  'It should not mutate elements in the array': function() {
+    var refArray = [1, 2, 3, 4];
+    every(refArray, function(){})
+    eq(JSON.stringify(refArray), JSON.stringify([1,2,3,4]));
+  },
+
+  'It should throw a typeError if there is no callback function': function() {
+    var isTypeError = false;
+    try {
+      every([1]); 
+    } catch (e) {
+      isTypeError = (e instanceof TypeError);
+    }
+    eq(isTypeError, true);
+  }
+
+});
+
+
+    </script>

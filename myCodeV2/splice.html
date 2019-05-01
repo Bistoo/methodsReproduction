@@ -1,0 +1,248 @@
+<script src="../tinytest.js"></script>
+<script>
+
+// FUNCTION
+//  The splice() method changes the contents of an array by removing 
+//  or replacing existing elements and/or adding new elements in place.
+//  removing or replacing existing elements and/or adding new elements
+
+// RETURN VALUE
+//  an array containing the deleted elements 
+//  if only one element is removed, an array of one element is returned
+//  if no elements are removed, an empty array is returned
+
+// SIGNATURE
+//  splice(originalArray, start[, deleteCount[, item1[, item2[, ...]]]])
+ 
+// PARAMETERS
+//  start
+//  deleteCount
+//  items to be added
+
+// EXAMPLES
+//  
+//  var months = ['Jan', 'Feb', 'Mar']
+//  months.splice(2);                           // ["Mar"]
+//
+//  var months = ['Jan', 'Feb'];
+//  months.splice(2,0,'Mar');                   // []        (but now months is ['Jan', 'Feb', 'Mar'])
+//  months.splice(2,1);                         // ["Mar"]   (months = ["Jan", "Feb"])
+//
+//  var months=[];
+//  months.splice(2,1);                         // []        (months = [])
+//  months.splice(2,0,"Hey Joe");               // []        (months = ["Hey Joe"])
+//  months.splice();                            // []
+//
+//  var array = ['jan', 'feb', 'jun'];
+//  array.splice(2, 0, 'mar', 'apr', 'may');    // []        (array = ["jan", "feb", "mar", "apr", "may", "jun"])
+//
+//  var array = ['jan', 'feb', 'jun'];
+//  array.splice(2, 1, 'mar', 'apr', 'may');    // ["jun"]   (array = ["jan", "feb", "mar", "apr", "may"] 
+//  
+//  [0,1,2,3,4,5].splice(2,0,'item1');                         // []        ([0, 1, "item1", 2, 3, 4, 5])
+//  [0,1,2].splice(5,0,'item1');                               // []        ([0, 1, 2, "item1"])
+//  [0,1,2].splice(5,0,'item1', 'item2', 'item3', 'item4');    // []        ([0, 1, 2, "item1", "item2", "item3", "item4"])
+
+// PROTOTYPE IMPLEMENTATION
+// function splice(originalArray, startIndex, deleteCount) {
+//    // SETUP
+//    // DELETION: put the elements to delete to removedArray
+//    // DELETION: puts the elements to delete from the originalArray
+//    // ADDITION: if there are items to add, it should be addded form startIndex
+// }
+//
+//  PROTOTYPE IMPLEMENTATION possible additional function case in ADDITION
+//  //if correctedStartIndex is = array.length, we just add items at the end of the array
+//  if (correctedStartIndex === array.length) {
+//    for (var l = 3 ; l < arguments.length ; l++){
+//      array.push(arguments[l]);
+//    }
+//  // if correctedStartIndex is not = to array.length, we add the items at the startIndex
+//  } else {put the addition function here}
+
+// CASES
+//  GENERAL COMMENTS
+//    it should start to delete or add items from the given startIndex
+//    if no deleteCount is provided, it should delete elements from startIndex
+//    FUNCTION : it deletes first and adds items after deletion
+//
+//  DELETION = if deleteCount is > 0
+//    when deleting items, it should delete the number of items given as deleteCount
+//    when deleting items, it should return an array with the deleted items
+//    when deleting items, it should remove items from startIndex to startIndex + deleteCount
+//    when deleting items, if the startIndex > array.length, it should return an empty array and not modify the originalArray
+//
+//  ADDITION = if items are provided
+//    when adding new items, it should return an empty removedArray
+//    when adding new items, it should push the existing items at the end of the array
+//    when adding items, it should add items from the provided startIndex
+//    when adding items, if startIndex > array.length, it should add the items at the end of the array
+// 
+//  MIXED CASES
+//    if deleteCount is different than 0 (deleting) and we provide items to add, it will delete the items first then add the provided items
+
+
+function splice(array, startIndex, deleteCount) {
+  var removedArray = [];
+  var spliceDeleteCount = array.length - startIndex;
+  var correctedStartIndex = startIndex;       // holds the corrected value of startIndex according to the passed value
+
+  // SETUP: corrects startIndex to be 0 if negative number
+  if (startIndex < 0) {
+    correctedStartIndex = 0;
+  }
+  // SETUP: corrects startIndex to be array.length if startIndex greater than array.length
+  if (startIndex > array.length){
+    correctedStartIndex = array.length;
+  }
+
+  // SETUP: if there is a deleteCount, it should be used as spliceDeleteCount
+  if (arguments.length > 2) {
+    spliceDeleteCount = deleteCount;
+  }
+
+  // DELETION
+  if (spliceDeleteCount > 0){
+    // copy the items from startIndex to startIndex + deleteCount to the removedArray
+    for (var i = startIndex ; i < startIndex + spliceDeleteCount ; i++) {
+      removedArray.push(array[i]);
+    }
+
+    // move the remaining items forward by deleteCount from startIndex to array.length
+    for (var j = correctedStartIndex ; j < array.length ; j++) {
+    // shift for each j element from startIndex (could use the splice function)
+      for (var k = correctedStartIndex ; k < array.length ; k++) {
+      array[k] = array[k + 1];
+      }
+    array.length--;
+    }
+  }
+
+  // ADDITION
+  if (arguments.length > 3) {
+
+      var tempArray = [];
+      // puts the array items between 0 to correctedStartIndex in the tempArray
+      for (var i = 0 ; i < correctedStartIndex ; i++) {
+        tempArray[i] = array[i];
+      }
+      // puts the passed arguments in the tempArray
+      for (var n = 3 ; n < arguments.length ; n++) {
+        tempArray[tempArray.length] = arguments[n]; 
+      }
+      // puts the rest of the array in the tempArray
+      for (var j = correctedStartIndex; j < array.length ; j++){
+        tempArray[tempArray.length] = array[j];
+      }
+      // copies the tempArray to array
+      for (var k = 0 ; k < tempArray.length ; k++ ) {
+        array[k] = tempArray[k];
+      }
+    }
+
+  return removedArray;
+}
+
+tests({
+
+  '1. It should return an array': function() {
+    newArray = splice([]);
+    eq(Array.isArray(newArray), true);
+  },
+
+  '2. It should return a new array, not the original array': function() {
+    var array = [];
+    newArray = splice(array);
+    eq(newArray !== array, true);
+  },
+
+  '3. It should delete from index 0 to startIndex if only startIndex is provided as an argument': function() {
+    var array = [0,1,2,3];
+    newArray = splice(array,2);
+    eq(newArray[0] === 2, true);
+    eq(newArray[1] === 3, true);
+  },
+
+  '4. If deleteCount is > 0, it should splice items by the given deleteCount': function() {
+    var array = [0,1,2,3,4];
+    newArray = splice(array,2,2);
+    eq(newArray.length === 2, true);
+  },
+
+  '5. It should start to splice from the given start index': function() {
+    var array = [0,1,2,3,4];
+    newArray = splice(array,2,2);
+    eq(newArray[0] === 2, true);
+    eq(newArray[1] === 3, true);
+  },
+
+  '6. It should modify the originalArray to be of length originalArray - deleteCount': function() {
+    var array = [0,1,2,3,4];
+    splice(array,2,2);
+    eq(array.length === 3, true);
+  },
+
+  '7. It should modify the originalArray to contain all original items minus the removed ones': function() {
+    var array = [0,1,2,3,4,5];
+    splice(array,2,2);
+    eq(array[0], 0);
+    eq(array[1], 1);
+    eq(array[2], 4);
+    eq(array[3], 5);
+  },
+
+  '8. If deleteCount is = 0, it should return an empty removedArray': function() {
+    var array = [0,1,2];
+    removedArray = splice(array,2,0);
+    eq(removedArray.length, 0);
+  },
+
+  '9. If deleteCount is < 0, it should return an empty removedArray': function() {
+    var array = [0,1,2];
+    removedArray = splice(array,2,-1);
+    eq(removedArray.length, 0);
+  },
+
+  '10. It should add the item provided as arguments to the originalArray': function() {
+    var array = [0,1,2];
+    removedArray = splice(array,5,0,'item1');
+    eq(array[3], 'item1');
+  },
+
+  '11. When adding new items, it should update the array.length to match the length of the array': function() {
+    var array = [0,1,2];
+    removedArray = splice(array,5,0,'item1');
+    eq(array.length, 4);
+  },
+
+  '12. When adding new items, it should add the items from the provided index and push the existing items at the end of the array': function() {
+    var array = [0,1,2,3];
+    removedArray = splice(array,2,0,'item1');
+    eq(array[0], 0);
+    eq(array[1], 1);
+    eq(array[2], 'item1');
+    eq(array[3], 2);
+    eq(array[4], 3);
+  },
+
+  '13. When adding items, if startIndex is > array.length, it should add the item add the end': function() {
+    var array = [0,1,2];
+    removedArray = splice(array,5,0,'item1');
+    eq(array[3], 'item1');
+  },
+
+  '14. If deleteCount is greater than 0 (deletion) and we provide items to add, it will delete the items first then add the provided items': function() {
+    var array = ['jan', 'feb', 'jun'];
+    array.splice(2, 1, 'mar', 'apr', 'may'); 
+    eq(array[0], 'jan');
+    eq(array[1], 'feb');
+    eq(array[2], 'mar');
+    eq(array[3], 'apr');
+    eq(array[4], 'may');
+  }
+
+
+});
+
+
+    </script>

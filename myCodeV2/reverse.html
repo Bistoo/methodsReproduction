@@ -1,0 +1,105 @@
+<script src="../tinytest.js"></script>
+<script>
+
+// FUNCTION
+//  the reverse() method reverses an array in place
+//  the first array element becomes the last, and the last array element becomes the first
+//  reverse is intentionally generic; this method can be called or applied to objects resembling arrays (with length property)
+
+// RETURN VALUE
+//  The reversed array
+
+// SIGNATURE
+//  reverse(array)
+
+// EXAMPLES
+//   [1,2,3].reverse();             // [3, 2, 1]
+//   [1,2,3, NaN].reverse();        // [NaN, 3, 2, 1]
+//   [1,,2].reverse;                // [2, empty, 1]
+//   (12).reverse();                // Uncaught TypeError
+
+// PROTOTYPE IMPLEMENTATION
+//
+//  METHOD WITH DECREMENTING LOOP
+//   function reverse(array) {
+//    reversedArray = [];
+//
+//    for (var i = array.length - 1 ; i > 0 ; i--) {
+//      reverseArray[array.length - 1 - i] = array[i];
+//    }
+//    array = reversedArray;
+//    return array;
+//   }
+// 
+//  METHOD WITH POP / PUSH
+//    var stack = [];
+//    for (var i = 0 ; i < array.length ; i++){
+//      stack.push(array[i]);
+//    };
+//    for (var i = 0 ; i < array.length ; i++){
+//      array[i] = stack.pop();
+//    };
+//    return array;
+//
+//  METHOD IN PLACE
+//    for (var i = 0 ; i < array.length ; i++) {
+//      array.splice(i, 0, array.pop());
+//    }
+
+function reverse(array) {
+  if (Array.isArray(array) === false) {
+    throw new TypeError("Passed in argument is not an array");
+  }
+  
+  for (var i = 0 ; i < array.length ; i++) {
+    array.splice(i, 0, array.pop());
+  }
+  return array;
+}
+
+tests({
+
+  'It should return an array': function() {
+    var array = reverse([]);
+    eq(Array.isArray(array), true);
+  },
+
+  'It should reverse the passed in array': function() {
+    var array = reverse([1,2]);
+    eq(array[0], 2);
+    eq(array[1], 1);
+  },
+
+  'It should reverse arrays with holes': function() {
+    var array = reverse([,2]);
+    eq(array[0], 2);
+    eq(array[1], undefined);
+  },
+
+  'If the last element is empty, it should not reverse the last element': function() {
+    var array = reverse([,2,]);
+    eq(array.length, 2);
+  },
+
+  'It should reverse NaN as any other element': function() {
+    var array = reverse([1,2,3, NaN]); 
+    eq(isNaN(array[0]), true);
+    eq(array[1], 3);
+    eq(array[2], 2);
+    eq(array[3], 1);
+  },
+
+  'If the passed parameter is not an array, it should throw a TypeError': function() {
+    var isTypeError = false;
+    try {
+      reverse(12);
+    } catch(e) {
+      isTypeError = e instanceof TypeError;
+    }
+    eq(isTypeError, true);
+  }
+
+});
+
+
+    </script>

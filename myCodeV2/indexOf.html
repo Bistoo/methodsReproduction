@@ -1,0 +1,107 @@
+<script src="../tinytest.js"></script>
+<script>
+
+// FUNCTION
+//  indexOf returns the first index at which a given element can be found in the array.
+//  if value is not found, -1 is returned
+
+// RETURN VALUE
+//  an index
+
+// FUNCTION SIGNATURE
+//  indexOf(array, searchElement[, fromIndex])
+
+// EXAMPLES
+//  [1,2,3].indexOf(2);                 // 1
+//  ([1,2,[3]]).indexOf(3);             // -1
+//  [undefined].indexOf(undefined);     // 0
+//  [NaN].indexOf(NaN);                 // -1
+
+// PROTOTYPE IMPLEMENTATION
+//  function indexOf(array, elementToSearch, fromIndex) {
+//  var startIndex = 0;
+//  if (fromIndex) {
+//    startIndex = fromIndex;
+//  }  
+//  for (var i = 0 ; i < array.length ; i++) {
+//      if (array[i] === elementToSearch) {
+//        return i;
+//      } else {
+//        return -1;
+//      }
+//    }
+//  }
+// 
+
+
+function indexOf(array, elementToSearch, fromIndex) {
+  var startIndex = 0;
+
+  if (fromIndex) {
+    startIndex = fromIndex;
+  }  
+
+  for (var i = startIndex ; i < array.length ; i++) {
+    if (array[i] === elementToSearch) {
+      return i;
+    } 
+  }
+  return -1;
+}
+
+tests({
+
+  'It should return -1 if there is no matching value': function() {
+    var resultIndexOf = indexOf([1],2);
+    eq(resultIndexOf, -1);
+  },
+
+  'It should return the index of the matching value if this value exists': function() {
+    var resultIndexOf = indexOf(['rabbit','rabbit','pig'],'pig');
+    eq(resultIndexOf, 2);
+  },
+
+  'It use strict equality to compare elementToSearch and array[i]': function() {
+    var resultIndexOf = indexOf(['rabbit','rabbit','pig'],'pig');
+    eq(resultIndexOf === 2, true);
+  },
+
+  'If there is a starting index, search should start searching from this starting index': function() {
+    var resultIndexOf = indexOf([1,1,1],1,1);
+    eq(resultIndexOf, 1);
+  },
+
+  'If there is a starting index and this index is greater than index.length, -1 is returned': function() {
+    var resultIndexOf = indexOf([1,1],1,3);
+    eq(resultIndexOf, -1);
+  },
+
+  'If there is a starting index and this index is negative, the whole array should be searched': function() {
+    var resultIndexOf = indexOf([1,2,3],2,-8);
+    eq(resultIndexOf, 1);
+  },
+
+  'If there is no starting index, search should search from 0': function() {
+    var resultIndexOf = indexOf(['pig'],'pig');
+    eq(resultIndexOf, 0);
+  },
+
+  'It should return the index of undefined if it is present in the array to search': function() {
+    var resultIndexOf = indexOf([undefined],undefined);
+    eq(resultIndexOf, 0);
+  },
+
+  'It should return -1 if NaN is searched, even if present in the array to search': function() {
+    var resultIndexOf = indexOf([NaN],NaN);
+    eq(resultIndexOf, -1);
+  },
+
+  'It should not recurse in nested arrays': function() {
+    var resultIndexOf = indexOf([1,2,[3]],3);
+    eq(resultIndexOf, -1);
+  }
+
+});
+
+
+    </script>

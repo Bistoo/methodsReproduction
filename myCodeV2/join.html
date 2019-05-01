@@ -1,0 +1,109 @@
+<script src="../tinytest.js"></script>
+<script>
+
+// FUNCTION
+//  creates and returns a new string by concatenating all of the elements in an array 
+//  (or an array-like object), separated by commas or a specified separator string.
+//  If an element is undefined or null, it is converted to the empty string.
+
+// RETURN VALUE
+//  returns a string.
+
+// SIGNATURE
+//  join(array, [separator])
+
+// EXAMPLES
+//  [].join();                    // ""
+//  [null, undefined].join();     // ","
+//  ["l", "a", "u"].join("");     // "lau"
+//  [0,1].join(null);             // "0null1"
+//  [1,2].join(NaN);              // "1NaN2"
+//  [NaN, NaN].join(NaN)          // "NaNNaNNaN"
+
+// PROTOTYPE IMPLEMENTATION
+// 
+// function join(array, separator) {
+//  var joinString = "";  
+//  for (i = 0 ; i < array.length ; i++) {
+//    joinString += array[i];
+//  }
+// return joinString;
+// }
+
+function join(array, separator) {
+  var joinedString = "";
+  var separatorString = ",";
+
+  if (arguments.length > 1) {
+    separatorString = String(separator);
+  }
+
+  for (var i = 0 ; i < array.length ; i++){
+    if (array[i] !== null && array[i] !== undefined){
+      joinedString += array[i]
+    }
+    
+    if (i !== array.length - 1){
+      joinedString += separatorString;
+    }
+  }
+
+  return joinedString;
+}
+
+tests({
+
+  'It should return a string': function() {
+    var joinString = join([]);
+    eq(typeof joinString === 'string', true);
+  },
+
+  'It should join all the array elements into the new string': function() {
+    var joinString = join(['one', 2]);
+    eq(joinString === 'one,2', true);
+  },
+
+  'If an empty array if passed in, it should retun an empty string': function() {
+    var joinString = join([]);
+    eq(joinString.length === 0, true);
+  },
+
+  'If there is no separator, it should separate with a comma (,)': function() {
+    var joinString = join(['one','two']);
+    eq(joinString === 'one,two', true);
+  },
+
+  'If there is a separator, it should separate with the given separator': function() {
+    var joinString = join(['one','two'], " + ");
+    eq(joinString === 'one + two', true);
+  },
+
+  'If there is a separator and separator is an empty space, all elements are joined without any characters in between them': function() {
+    var joinString = join(['one','two'], '');
+    eq(joinString === 'onetwo', true);
+  },
+
+  'If an element is null, it should be converted to an empty string ': function() {
+    var joinString = join(['one', null,'two']);
+    eq(joinString === 'one,,two', true);
+  },
+
+  'If first element is undefined, it should be converted to an empty string ': function() {
+    var joinString = join([,'one']);
+    eq(joinString === ',one', true);
+  },
+
+  'If null is passed in as separator, it should be used as a "null" string': function() {
+    var joinString = join([0,1], null);
+    eq(joinString === '0null1', true);
+  },
+
+  'If NaN is passed in as separator, it should be used as a "NaN" string': function() {
+    var joinString = join([0,1], NaN);
+    eq(joinString === '0NaN1', true);
+  }
+
+});
+
+
+    </script>

@@ -1,0 +1,106 @@
+<script src="../tinytest.js"></script>
+<script>
+
+// FUNCTION
+//  lastIndexOf returns the index from a given value. If value is not found, -1 is returned
+
+// RETURN VALUE
+//   a number
+
+// FUNCTION SIGNATURE
+//  lastIndexOf(array, searchElement[, fromIndex])
+
+// EXAMPLES
+//  
+
+// CASES
+
+// PROTOTYPE IMPLEMENTATION
+//  function lastIndexOf(array, elementToSearch, fromIndex) {
+//  var startIndex = array.length - 1;
+//  if (fromIndex) {
+//    startIndex = fromIndex;
+//  }  
+//  for (var i = startIndex ; i > 0 ; i--) {
+//      if (array[i] === elementToSearch) {
+//        return i;
+//      }
+//    }
+//  return -1;
+//  }
+// 
+
+
+
+function lastIndexOf(array, elementToSearch, fromIndex) {
+  var startIndex = array.length - 1;
+
+  if (fromIndex) {
+    startIndex = fromIndex;
+
+    if (startIndex < 0) {
+      startIndex = array.length + fromIndex;
+    }
+  }  
+
+  for (var i = startIndex ; i > 0 ; i--) {
+    if (array[i] === elementToSearch) {
+      return i;
+    } 
+  }
+  return -1;
+}
+
+tests({
+
+  'It should return a number': function() {
+    var resultIndexOf = lastIndexOf([]);
+    eq(typeof resultIndexOf === "number", true);
+  },
+
+  'It should return -1 if there is no matching value': function() {
+    var resultIndexOf = lastIndexOf([1],2);
+    eq(resultIndexOf, -1);
+  },
+
+  'It should return the index of the matching value if this value exists': function() {
+    var resultIndexOf = lastIndexOf(['rabbit','rabbit','pig'],'pig');
+    eq(resultIndexOf, 2);
+  },
+
+  'It should return the index of the first occurence starting from the end of the array': function() {
+    var resultIndexOf = lastIndexOf(['rabbit','pig','pig'],'pig');
+    eq(resultIndexOf, 2);
+  },
+
+  'It use strict equality to compare elementToSearch and array[i]': function() {
+    var resultIndexOf = lastIndexOf(['rabbit','rabbit','pig'],'pig');
+    eq(resultIndexOf === 2, true);
+  },
+
+  'If there is a starting index, search should start searching from this starting index': function() {
+    var resultIndexOf = lastIndexOf([1,1,1],1,1);
+    eq(resultIndexOf, 1);
+  },
+
+  'If there is a starting index and index is greater than index.length, the array is searched from array.length-1': function() {
+    var resultIndexOf = lastIndexOf([1,1],1,10);
+    eq(resultIndexOf, 1);
+  },
+
+  'If there is a starting index and index is negative, the search will start from array.length + startIndex ': function() {
+    var resultIndexOf = lastIndexOf([1,2,3,4],2,-3);
+    eq(resultIndexOf, 1);
+    var resultIndexOf1 = lastIndexOf([1,2,3,4],2,-4);
+    eq(resultIndexOf1, -1);
+  },
+
+  'If there is no starting index, search should search from array.length': function() {
+    var resultIndexOf = lastIndexOf(['pig','pig'],'pig');
+    eq(resultIndexOf, 1);
+  }
+
+});
+
+
+    </script>
